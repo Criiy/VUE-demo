@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app" @mouseover="clearSlide" @mouseout="autoSlide">
+    <div class="img-box" >
+
+       <!-- 控制左右的箭头-->
+        <span class="arrow right" @click="goto(nextIndex)">&gt;</span>
+        <span class="arrow left" @click="goto(prevIndex)">&lt;</span>
+
+        <!--图片位置-->
+        <a class="imgs">
+            <transition :name="direction">
+                <img v-if="isShow" :src="slides[nowIndex].src" class="imgs">
+            </transition>
+
+            <transition :name="directionOld">
+                <img v-if="!isShow" :src="slides[nowIndex].src" class="imgs">
+            </transition>
+        </a>
+
+    </div>
+
+    <!--底部按钮-->
+    <div>
+        <div class="btn-box">
+            <span class="btn" :class="{on: index === nowIndex} " v-for="(item,index) in slides" @click="goto(index)"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data:{
+            message: 'fuck',
+            nowIndex: 0,
+            isShow: true,
+            direction: '',
+            directionOld: '',
+            slides: [
+                {
+                    src: 'images/1.jpg'
+                },
+                {
+                    src: 'images/2.jpg'
+                },
+                {
+                    src: 'images/3.jpg'
+                },
+                {
+                    src: 'images/4.jpg'
+                },
+                {
+                    src: 'images/5.jpg'
+                }
+            ]
+            },
+        computed:{
+            prevIndex: function () {
+                this.direction = 'sliding-prev';
+                this.directionOld = 'sliding-prev-old';
+                if(this.nowIndex === 0){
+                    return this.slides.length - 1;
+                } else {
+                    return this.nowIndex - 1;
+                }
+            },
+            nextIndex: function () {
+                this.direction = 'sliding-next';
+                this.directionOld = 'sliding-next-old';
+                if(this.nowIndex === this.slides.length-1){
+                    return 0;
+                } else {
+                    return this.nowIndex + 1;
+                }
+            }
+        },
+        methods:{
+             goto : function(index){
+
+                 var that = this;
+                 this.isShow = false;
+
+                 if(index > this.nowIndex){
+                     this.direction = 'sliding-next';
+                     this.directionOld = 'sliding-next-old';
+                 } else {
+                     this.direction = 'sliding-prev';
+                     this.directionOld = 'sliding-prev-old';
+                 }
+
+                /* ES5的this在下面的函数体中指示变了，所以要在外面保存一个that
+                 ES6的箭头函数可以解决此问题*/
+
+                setTimeout(function () {
+                    that.isShow = true;
+                    that.nowIndex = index;
+                },20);
+            },
+            autoSlide: function () {
+                 var that = this;
+                this.Slider = setInterval(function () {
+                    that.goto(that.nextIndex);
+                },1000);
+            },
+            clearSlide: function () {
+                clearInterval(this.Slider);
+            }
+        },
+        mounted : function () {
+            this.autoSlide();
+        }
+
+
+    })
+
+</script>
+
+</body>
+
+
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+body{
+    background: #333333;
+}
+img{
+    display: block;
+}
+#app{
+    width: 700px;
+    margin: 30px auto;
+    overflow: hidden;
+}
+
+    /*img-box的显示样式*/
+    .img-box{
+        z-index: 0;
+        width: 700px;
+        height: 450px;/*一定要指定宽高*/
+        position: relative;
+
+
+    }
+
+    /*img-box的位置样式*/
+    .img-box{
+
+    }
+
+    /*arrow的位置样式*/
+    .arrow{
+        z-index: 2;
+        display: block;
+        position: absolute;
+    }
+
+    /*arrow的显示样式*/
+    .arrow{
+        cursor: pointer;
+        font-size: 40px;
+        color: red;
+    }
+
+   .imgs{
+       z-index: 1;
+       position: absolute;/*一定要这个position*/
+   }
+
+
+    .left{
+        top:210px;
+        left: 20px;
+    }
+    .right{
+        top:210px;
+        right: 20px;
+    }
+
+
+    .btn-box{
+        width: 140px;
+        margin: 10px auto;
+    }
+
+    .btn{
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border: 2px red solid;
+        border-radius: 50px;
+        cursor: pointer;
+    }
+
+    /*.btn:not(:first-child):not(:last-child){
+        margin: 10px;
+    }*/
+    .btn:not(:last-child){
+        margin-right: 10px;
+    }
+
+    .on{
+        background: white;
+    }
+
+    .sliding-next-enter-active{
+        transition: all .5s;
+    }
+    .sliding-next-enter{
+        transform: translateX(700px);
+        opacity: 0;
+    }
+    .sliding-next-old-leave-active{
+        transition: all .5s;
+        transform: translateX(-700px);
+        opacity: 0;
+    }
+
+    .sliding-prev-enter-active{
+        transition: all .5s;
+    }
+    .sliding-prev-enter{
+        transform: translateX(-700px);
+        opacity: 0;
+    }
+    .sliding-prev-old-leave-active{
+        transition: all .5s;
+        transform: translateX(700px);
+        opacity: 0;
+    }
+</style>
+</html>
