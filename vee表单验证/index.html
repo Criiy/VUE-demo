@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://unpkg.com/vee-validate@2.0.0-rc.7"></script>
+</head>
+<body>
+<div id="app">
+
+<form @submit.prevent="validateBeforeSubmit">
+    <div>
+        <label class="label" for="email">Email:</label>
+        <input v-validate="'required|email'" :class="{ 'danger': errors.has('email') }" name="email" type="text" placeholder="please enter your Email">
+        <span v-if="errors.has('email')" class="error">{{ errors.first('email') }}</span>
+    </div>
+
+    <div>
+        <label class="label" for="password">Password:</label>
+        <input v-validate="'required|min:6'" :class="{'input': true, 'danger': errors.has('password') }" name="password" type="password" placeholder="please enter your password">
+        <span v-if="errors.has('password')" class="error">{{ errors.first('password') }}</span>
+    </div>
+
+    <div>
+        <button type="submit">submit</button>
+    </div>
+
+</form>
+
+</div>
+
+<script>
+//    引入vee验证
+    const config = {
+        locale: 'en'
+    };
+    Vue.use(VeeValidate,config);
+
+//    ES6的更新词典与验证规则
+    /*const dictionary = {
+            en: {
+                messages: {
+                    email: () => 'must be a correct email address',
+                required: ( field )=> "please enter your " + field
+        },
+        password: {
+        required: ( field )=> "please enter your " + field
+    },
+    attributes:{
+        email:'email',
+            password: 'password'
+    }
+    }
+    };
+    Validator.localize(dictionary);*/
+
+//    ES5写法
+ /*       const dictionary = {
+            en:{
+                message: {
+                    email: function () {
+                        return 'must be a correct email address :)'
+                    },
+                    required: function (field) {
+                        return "please enter your " + field
+                    }
+                },
+                password: {
+                    required: function (field) {
+                        return "please enter your " + field
+                    }
+                },
+                attributes:{
+                    email:'email',
+                    password: 'password'
+                }
+            }
+        };
+Validator.localize(dictionary);*/
+
+    new Vue({
+       el: '#app',
+       data: {},
+       methods: {//submit按钮的操作
+
+           /*validateBeforeSubmit() {
+               this.$validator.validateAll().then((result) => {
+                   if (result) {
+                   !!!!!!!!!!!!!成功的操作！！！！！！！！！！！！！！！
+
+                       // eslint-disable-next-line
+                       this.$http.get('api/login')
+                           .then((res)=>{
+                           this.$emit('have-log',res.data);
+                   },(error)=>{
+
+                    !!!!!!!!!!!!!失败的操作！！！！！！！！！！！！！！！
+
+                       });
+                       return;
+                   }
+
+                   alert('Correct them errors!');
+           });
+           }*/
+
+
+       }
+    });
+
+
+
+</script>
+
+</body>
+
+
+<style>
+*{
+    padding: 0;
+    margin: 0;
+}
+</style>
+</html>
